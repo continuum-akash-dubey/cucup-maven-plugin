@@ -6,10 +6,14 @@ public class CucumberFeature {
 
     private final String featureFileName;
     private final Path featureFilePath;
+    private final String featureName;
+    private final String featureRelativePath;
 
-    public CucumberFeature(Path filePath) {
+    public CucumberFeature(Path filePath, String featureRelativePath) {
         this.featureFilePath = filePath;
         featureFileName = featureFilePath.toFile().getName();
+        featureName = featureFileName.substring(0, featureFileName.indexOf('.'));
+        this.featureRelativePath = featureRelativePath;
     }
 
     public String getFeatureFileName() {
@@ -18,6 +22,14 @@ public class CucumberFeature {
 
     public Path getFeatureFilePath() {
         return this.featureFilePath;
+    }
+
+    public String getFeatureName() {
+    	return featureName;
+    }
+
+    public String getFeatureFileRelativePath() {
+    	return featureRelativePath;
     }
 
 }

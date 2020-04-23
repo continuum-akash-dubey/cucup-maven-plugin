@@ -34,20 +34,26 @@ public class CucumberFeatureFileReader {
      */
     public static List<CucumberFeature> getAllFeatureFilesInPath(File baseDir, String path) throws IOException {
         Path featureFilePath = Paths.get(baseDir.toString(), path);
-        Files.walkFileTree(featureFilePath, new FeatureFileVisitor());
+        Files.walkFileTree(featureFilePath, new FeatureFileVisitor(path));
         return CUCUMBER_FEATURE_FILES;
     }
 
-    private static class FeatureFileVisitor extends SimpleFileVisitor<Path> {
+	private static class FeatureFileVisitor extends SimpleFileVisitor<Path> {
 
-        @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-            if (file.toFile().getName().contains(".feature")) {
-                CUCUMBER_FEATURE_FILES.add(new CucumberFeature(file));
-            }
-            return super.visitFile(file, attrs);
-        }
+		private String relativeFeatureFilePath;
 
-    }
+		private FeatureFileVisitor(String relativeFeatureFilePath) {
+			this.relativeFeatureFilePath = relativeFeatureFilePath;
+		}
+
+		@Override
+		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+			if (file.toFile().getName().contains(".feature")) {
+				CUCUMBER_FEATURE_FILES.add(new CucumberFeature(file, relativeFeatureFilePath));
+			}
+			return super.visitFile(file, attrs);
+		}
+
+	}
 
 }
